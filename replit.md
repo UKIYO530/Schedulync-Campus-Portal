@@ -36,7 +36,9 @@ Schedulync is a student portal for coursework tasks, time-based campus reservati
 ## Product
 
 - Students can maintain tasks, check rooms and lab instruments against a requested time range, create or cancel reservations, and submit reports tied to a specific instrument.
-- The database currently has a starter catalog of three rooms and four instruments. Replace these demo records with the institution’s verified inventory and availability rules before relying on it as a complete campus catalog.
+- The supplied equipment list is imported as 69 coded instruments across 10 categories. It has no room records, so the database still includes three clearly identified starter room examples until a verified room list is supplied.
+- The equipment file contains no maintenance or room-location fields; instruments start as available, and reservations determine time conflicts.
+- The supplied Schedulync mark sets a black-and-ivory visual palette; green, amber, and red remain reserved for availability and severity statuses.
 
 ## User preferences
 
@@ -47,6 +49,7 @@ No additional preferences recorded.
 - Availability query timestamps arrive as URL strings; convert them to `Date` values before validating with the generated query schema.
 - Apply authentication to protected route prefixes, not the whole API router; inventory availability and health checks need to remain accessible before student sign-in.
 - The database push command targets the development database only.
+- The uploaded equipment names retain their trailing item suffixes (for example, `01`); the inventory code is stored separately in `code`.
 
 ## Pointers
 

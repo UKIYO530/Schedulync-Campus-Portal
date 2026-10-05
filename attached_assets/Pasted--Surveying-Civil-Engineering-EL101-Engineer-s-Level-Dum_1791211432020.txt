@@ -1,0 +1,116 @@
+### Surveying & Civil Engineering
+
+EL101 - Engineer's Level (Dumpy) 01
+EL102 - Engineer's Level (Precise) 01
+TO101 - Theodolite (Optical) 01
+ET101 - Engineer's Transit 01
+TS101 - Total Station 01
+
+---
+
+### Physics, Electrical & Electronics Lab
+
+OS101 - Oscilloscope 01
+DM101 - Digital Multimeter 01
+FG101 - Function Generator 01
+DC101 - DC Ammeter and Milliammeter 01
+AC101 - AC Ammeter and Milliammeter 01
+WM101 - Wattmeter 01
+
+---
+
+### Chemistry & Analytical Chemistry Lab
+
+AA101 - Atomic Absorption Spectrophotometer 01
+CM101 - Conductivity Meter 01
+EA101 - Electroanalizer 01
+GC101 - Gas Chromatography 01
+IE102 - Ion Selective Electrode Meter 01
+PH102 - Sartorius Basic pH Meter PB-20 01
+RF101 - Refractometer 01
+SE101 - Soxhlet Fat Extractor 01
+TN102 - Transference Number Apparatus 01
+UV101 - UV-VIS Spectrophotometer 01
+FT101 - Fourier Transform Infrared 01
+SP101 - Spectrophotometer 01
+
+---
+
+### Biology, Microbiology & Environmental Testing
+
+AC102 - Autoclave 01
+CC101 - Colony Counter 01
+CR101 - COD Reactor and Photometer 01
+DO101 - Dissolved Oxygen Meter 01
+IC101 - Incubator 01
+IS101 - Incubator with Shaker 01
+LF101 - Laminar Flow 01
+MS101 - Microscope 01
+PP101 - Pipetor 01
+UT102 - UV Transilluminator 01
+
+---
+
+### Thermal Analysis & Calorimetry
+
+BC101 - Bomb Calorimeter 01
+DC102 - Digital Scanning Calorimeter 01
+SC101 - Solution Calorimeter 01
+TG102 - TGA (Thermogravimetric Analysis) 01
+TM101 - TMA (Thermomechanical Analysis) 01
+
+---
+
+### Mass & Density Measurement (Balances & Scales)
+
+AB101 - Analytical Balance 01
+CB101 - Chain Balance 01
+DW101 - Digital Weighing Scale 01
+ED101 - Electronic Densimeter 01
+PS101 - Platform Scale 01
+SB101 - Solution Balance 01
+SB102 - Spring Balance 01
+TB101 - Triple Beam Balance 01
+
+---
+
+### Materials Testing & Physical Properties
+
+RH101 - Rockwell Hardness Tester 01
+TN101 - Tensiometer 01
+UT101 - Universal Testing Machine 01
+VB101 - Viscometer - Brookfield 01
+
+---
+
+### General Laboratory Equipment & Processing
+
+DA101 - Distilling Apparatus 01
+FC101 - Fisher Centrifuge Model 225 01
+FH101 - Fume Hoods 01
+FN101 - Furnace 01
+HP101 - Hotplate 01
+OV101 - Oven 01
+RF102 - Refrigerator 01
+SN101 - Sonicator 01
+WB101 - Waterbath 01
+
+---
+
+### Environmental Safety, Physics & Industrial Hygiene
+
+BM101 - Barometer 01
+LM101 - Light Meter 01
+ND101 - Noise Dosimeter 01
+PG101 - Pressure Gauges 01
+PM101 - Psychrometer 01
+RM101 - Radiometer 01
+SL101 - Sound Level Meter 01
+TG101 - Temperature Gauges 01
+
+---
+
+### Medical, Health & Access Control
+
+BM102 - Biometrics 01
+BP101 - Blood Pressure Monitor 01

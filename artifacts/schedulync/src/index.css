@@ -2,6 +2,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import './landing-mobile.css';
+@import './brand-theme.css';
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 @theme inline {

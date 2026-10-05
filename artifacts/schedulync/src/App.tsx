@@ -24,7 +24,7 @@ const appearance = {
     logoImageUrl: `${window.location.origin}${basePath}/schedulync-logo.png`,
   },
   variables: {
-    colorPrimary: '#842344',
+    colorPrimary: '#111111',
     colorForeground: '#273047',
     colorMutedForeground: '#737b8d',
     colorDanger: '#be394d',
