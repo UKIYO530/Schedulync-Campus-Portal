@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Schedulync"
+description = "A campus portal for students to track assigned tasks, reserve rooms and laboratory instruments by availability and code, and report equipment damage."
+version = "1.0.0"
+id = "artifacts/schedulync"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23495
+
+[services.development]
+run = "pnpm --filter @workspace/schedulync run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/schedulync", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/schedulync/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23495"
+BASE_PATH = "/"

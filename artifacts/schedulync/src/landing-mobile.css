@@ -1,0 +1,27 @@
+@media (max-width: 480px) {
+  main[class~="min-h-[100dvh]"] > header {
+    gap: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  main[class~="min-h-[100dvh]"] > header > div {
+    gap: 0.5rem;
+  }
+
+  main[class~="min-h-[100dvh]"] > header .btn-primary,
+  main[class~="min-h-[100dvh]"] > header .btn-secondary {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  main[class~="min-h-[100dvh]"] > header > div:first-child img {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  main[class~="min-h-[100dvh]"] > header > div:first-child span {
+    font-size: 1rem;
+  }
+}

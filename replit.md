@@ -1,15 +1,15 @@
-# [Project name]
+# Schedulync
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Schedulync is a student portal for coursework tasks, time-based campus reservations, and shared-instrument accountability reports.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required environment: `DATABASE_URL` and the Clerk publishable/secret keys configured through Replit Secrets
 
 ## Stack
 
@@ -22,23 +22,31 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/schedulync` — React/Vite student portal and its visual theme
+- `artifacts/api-server` — Express API, auth middleware, and feature routes
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract; generated Zod schemas and React Query hooks live in the shared API libraries
+- `lib/db/src/schema` — Drizzle tables and schema barrel
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Clerk user IDs are the student primary keys and ownership scope for student-created data; never accept ownership IDs from request bodies.
+- Reservation overlap checks run inside a database transaction with a resource-scoped advisory lock so simultaneous requests cannot double-book one item.
+- The OpenAPI contract generates both client hooks and server-side Zod validators; update the contract and regenerate rather than editing generated files.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Students can maintain tasks, check rooms and lab instruments against a requested time range, create or cancel reservations, and submit reports tied to a specific instrument.
+- The database currently has a starter catalog of three rooms and four instruments. Replace these demo records with the institution’s verified inventory and availability rules before relying on it as a complete campus catalog.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+No additional preferences recorded.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Availability query timestamps arrive as URL strings; convert them to `Date` values before validating with the generated query schema.
+- Apply authentication to protected route prefixes, not the whole API router; inventory availability and health checks need to remain accessible before student sign-in.
+- The database push command targets the development database only.
 
 ## Pointers
 

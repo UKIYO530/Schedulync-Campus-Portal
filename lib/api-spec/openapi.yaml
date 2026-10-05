@@ -3,13 +3,25 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API for the Schedulync student portal
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: students
+    description: Student profile
+  - name: tasks
+    description: Student tasks and to-dos
+  - name: resources
+    description: Reservable rooms and laboratory instruments
+  - name: reservations
+    description: Resource reservations
+  - name: incidents
+    description: Equipment accountability reports
+  - name: dashboard
+    description: Student home summary
 paths:
   /healthz:
     get:
@@ -24,6 +36,403 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /students/me:
+    get:
+      operationId: getStudentProfile
+      tags: [students]
+      summary: Get the signed-in student's profile
+      responses:
+        "200":
+          description: Student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentProfile"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Profile not created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: upsertStudentProfile
+      tags: [students]
+      summary: Create or update the signed-in student's profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentProfileInput"
+      responses:
+        "200":
+          description: Saved student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentProfile"
+        "400":
+          description: Invalid profile details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List the signed-in student's tasks
+      parameters:
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: "#/components/schemas/TaskStatus"
+      responses:
+        "200":
+          description: Student task list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Add a task to the signed-in student's list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Invalid task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /tasks/{id}:
+    patch:
+      operationId: updateTask
+      tags: [tasks]
+      summary: Update a task owned by the signed-in student
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Invalid task update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteTask
+      tags: [tasks]
+      summary: Delete a task owned by the signed-in student
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Task deleted
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /resources:
+    get:
+      operationId: listResources
+      tags: [resources]
+      summary: List the rooms and instruments in the campus inventory
+      parameters:
+        - in: query
+          name: type
+          required: false
+          schema:
+            $ref: "#/components/schemas/ResourceType"
+      responses:
+        "200":
+          description: Campus resource inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resource"
+  /resources/availability:
+    get:
+      operationId: checkResourceAvailability
+      tags: [resources]
+      summary: Check which resources are free for a requested time window
+      parameters:
+        - in: query
+          name: startAt
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: endAt
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: type
+          required: false
+          schema:
+            $ref: "#/components/schemas/ResourceType"
+      responses:
+        "200":
+          description: Inventory with availability for the requested time window
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ResourceAvailability"
+        "400":
+          description: Invalid time window
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /reservations:
+    get:
+      operationId: listReservations
+      tags: [reservations]
+      summary: List the signed-in student's reservations
+      responses:
+        "200":
+          description: Student reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reservation"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createReservation
+      tags: [reservations]
+      summary: Reserve a room or instrument for an available time
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReservationInput"
+      responses:
+        "201":
+          description: Confirmed reservation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "400":
+          description: Invalid reservation details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Resource is already reserved for part of that time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /reservations/{id}:
+    patch:
+      operationId: cancelReservation
+      tags: [reservations]
+      summary: Cancel a reservation owned by the signed-in student
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cancelled reservation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Reservation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /incidents:
+    get:
+      operationId: listIncidents
+      tags: [incidents]
+      summary: List accountability reports submitted by the signed-in student
+      responses:
+        "200":
+          description: Student accountability reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Incident"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createIncident
+      tags: [incidents]
+      summary: Report damaged or malfunctioning campus equipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncidentInput"
+      responses:
+        "201":
+          description: Submitted incident report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+        "400":
+          description: Invalid incident report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get task, reservation, and resource summary for the home page
+      responses:
+        "200":
+          description: Student dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+        "401":
+          description: Sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +442,260 @@ components:
           type: string
       required:
         - status
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    TaskStatus:
+      type: string
+      enum: [todo, in_progress, completed]
+    TaskPriority:
+      type: string
+      enum: [low, normal, high]
+    ResourceType:
+      type: string
+      enum: [room, instrument]
+    ResourceStatus:
+      type: string
+      enum: [available, maintenance]
+    ReservationStatus:
+      type: string
+      enum: [confirmed, cancelled]
+    IncidentSeverity:
+      type: string
+      enum: [minor, moderate, critical]
+    IncidentStatus:
+      type: string
+      enum: [submitted, in_review, resolved]
+    StudentProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        program:
+          type: [string, "null"]
+        yearLevel:
+          type: [string, "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, fullName, email, program, yearLevel, createdAt]
+    StudentProfileInput:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+          maxLength: 160
+        email:
+          type: string
+          format: email
+        program:
+          type: [string, "null"]
+          maxLength: 160
+        yearLevel:
+          type: [string, "null"]
+          maxLength: 40
+      required: [fullName, email]
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        ownerId:
+          type: string
+        title:
+          type: string
+        description:
+          type: [string, "null"]
+        dueAt:
+          type: [string, "null"]
+          format: date-time
+        priority:
+          $ref: "#/components/schemas/TaskPriority"
+        status:
+          $ref: "#/components/schemas/TaskStatus"
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, ownerId, title, description, dueAt, priority, status, createdAt]
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        description:
+          type: [string, "null"]
+        dueAt:
+          type: [string, "null"]
+          format: date-time
+        priority:
+          $ref: "#/components/schemas/TaskPriority"
+      required: [title, priority]
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        description:
+          type: [string, "null"]
+        dueAt:
+          type: [string, "null"]
+          format: date-time
+        priority:
+          $ref: "#/components/schemas/TaskPriority"
+        status:
+          $ref: "#/components/schemas/TaskStatus"
+      minProperties: 1
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/ResourceType"
+        category:
+          type: string
+        location:
+          type: [string, "null"]
+        description:
+          type: [string, "null"]
+        capacity:
+          type: [integer, "null"]
+        status:
+          $ref: "#/components/schemas/ResourceStatus"
+      required: [id, code, name, type, category, location, description, capacity, status]
+    ResourceAvailability:
+      allOf:
+        - $ref: "#/components/schemas/Resource"
+        - type: object
+          properties:
+            available:
+              type: boolean
+          required: [available]
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+        resourceId:
+          type: integer
+        resourceCode:
+          type: string
+        resourceName:
+          type: string
+        studentId:
+          type: string
+        title:
+          type: string
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/ReservationStatus"
+        notes:
+          type: [string, "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, resourceId, resourceCode, resourceName, studentId, title, startAt, endAt, status, notes, createdAt]
+    ReservationInput:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        notes:
+          type: [string, "null"]
+      required: [resourceId, title, startAt, endAt]
+    Incident:
+      type: object
+      properties:
+        id:
+          type: integer
+        resourceId:
+          type: integer
+        resourceCode:
+          type: string
+        resourceName:
+          type: string
+        studentId:
+          type: string
+        studentName:
+          type: string
+        description:
+          type: string
+        severity:
+          $ref: "#/components/schemas/IncidentSeverity"
+        status:
+          $ref: "#/components/schemas/IncidentStatus"
+        occurredAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, resourceId, resourceCode, resourceName, studentId, studentName, description, severity, status, occurredAt, createdAt]
+    IncidentInput:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+        description:
+          type: string
+          minLength: 4
+          maxLength: 4000
+        severity:
+          $ref: "#/components/schemas/IncidentSeverity"
+        occurredAt:
+          type: string
+          format: date-time
+      required: [resourceId, description, severity, occurredAt]
+    DashboardSummary:
+      type: object
+      properties:
+        tasksTotal:
+          type: integer
+        tasksComplete:
+          type: integer
+        tasksDueSoon:
+          type: integer
+        resourcesAvailable:
+          type: integer
+        upcomingReservation:
+          anyOf:
+            - $ref: "#/components/schemas/Reservation"
+            - type: "null"
+        recentIncidents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Incident"
+      required: [tasksTotal, tasksComplete, tasksDueSoon, resourcesAvailable, upcomingReservation, recentIncidents]
 
